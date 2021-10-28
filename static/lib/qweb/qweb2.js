@@ -25,6 +25,34 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // TODO: line number -> https://bugzilla.mozilla.org/show_bug.cgi?id=618650
 // TODO: templates orverwritten could be called by t-call="__super__" ?
 // TODO: t-set + t-value + children node == scoped variable ?
+// List of HTML entities for escaping.
+
+var escapeMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+    '`': '&#x60;'
+};
+
+// Functions for escaping and unescaping strings to/from HTML interpolation.
+var createEscaper = function (map) {
+    var escaper = function (match) {
+        return map[match];
+    };
+    // Regexes for identifying a key that needs to be escaped
+    // var source = '(?:' + _.keys(map).join('|') + ')';
+    var source = '(?:' + Object.keys(map).join('|') + ')';
+    var testRegexp = RegExp(source);
+    var replaceRegexp = RegExp(source, 'g');
+    return function (string) {
+        string = string == null ? '' : '' + string;
+        return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
+    };
+};
+const escape = createEscaper(escapeMap);
+
 var QWeb2 = {
     expressions_cache: { },
     RESERVED_WORDS: 'true,false,NaN,null,undefined,debugger,console,window,in,instanceof,new,function,return,this,typeof,eval,void,Math,RegExp,Array,Object,Date'.split(','),
@@ -69,7 +97,7 @@ var QWeb2 = {
             if (s == null) {
                 return '';
             }
-            return _.escape(s);
+            return escape(s);
         },
         markup(s) {
             return new _Markup(s);
@@ -203,7 +231,8 @@ var QWeb2 = {
                       }
                 }
 
-                _.each(Object.keys(old_dict), function(z) {
+                // _.each(Object.keys(old_dict), function(z) {
+                (Object.keys(old_dict) || []).forEach((z) => {
                     old_dict[z] = new_dict[z];
                 });
             } else {
