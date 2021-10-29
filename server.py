@@ -65,7 +65,7 @@ class Application:
         # concanate all templates and return to client so client can call qweb.add_templates
 
         files = [
-            "static/js/app.xml",
+            "static/js/app/app.xml",
             "static/js/components/header/header.xml",
             "static/js/components/content/content.xml",
             "static/js/components/footer/footer.xml",
