@@ -54,8 +54,12 @@ export class BaseComponent {
     async mount(target) {
         await this.willStart();
         const html = this.render();
-        const doc = new DOMParser().parseFromString(html, "text/html");
-        this.el = doc.body.firstElementChild;
+        if (this.template) {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            this.el = doc.body.firstElementChild;
+        } else {
+            this.el = html; // in case template is not given then we create div element using createElement
+        }
         // TODO: MSH: What if there are multiple root node of component template
         // for (let child of doc.body.childNodes) {
         //     if (this.el) {
@@ -75,7 +79,14 @@ export class BaseComponent {
      * @returns rendered template i.e. generated html from qweb template
      */
     render() {
-        return this.env.qweb.render(this.template, { widget: this });
+        let el;
+        if (this.template) {
+            el = this.env.qweb.render(this.template, { widget: this });
+        } else {
+            // el = this._makeDescriptive();
+            el = document.createElement('div');
+        }
+        return el;
     }
     /**
      * Called after component is rendered and inserted into DOM

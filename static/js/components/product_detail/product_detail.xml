@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="ProductDetails">
+        <div class="o_product_details">
+			<div class="container">
+				<div class="row row-pb-md">
+					<div class="col-lg-3 mb-4 text-center">
+						<div class="product-entry border" t-att-data-id="widget.product.id">
+							<a href="#" class="prod-img">
+								<img t-att-src="widget.product.product_image" class="img-fluid" alt="Product Image" />
+							</a>
+							<div class="desc">
+								<h2><a href="#"><t t-esc="widget.product.produt_name"></t></a></h2>
+								<span class="price"><t t-esc="widget.product.product_price"/></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+    </t>
+</templates>

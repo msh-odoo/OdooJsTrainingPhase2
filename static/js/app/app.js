@@ -1,37 +1,35 @@
 import { BaseComponent } from "../components/base_component.js";
-import { Content } from "../components/content/content.js";
-import { Header } from "../components/header/header.js";
-import { Footer } from "../components/footer/footer.js";
 import { rpc } from "../core/rpc.js";
+import { registry } from "../core/registry.js";
+
 
 // TODO: MSH: Add unit tests, maybe use Qunit/jest/mocha test runner lib for testing
 
-// TOD: MSH: Instead of writing Header, Content and Footer, manage everything with screen, there will be
-// registry of screens and we will call screen, initialize it and mount it in body
-// on any screen we will call custom event change-screen and we will pass screen name in event detail
-// this custom event change-screen is listened by window object here in App and handler will be here itself.
+// TODO: MSH: Introduce model part which stores data of application, we should use MVVM pattern
 
 export class App extends BaseComponent {
     async mount(target) {
         await super.mount(target);
-        // TODO: MSH: I don't like this, someday we will make it declarative so it is defined in xml but we need to
-        // develop our own templating engine in that case to handle declarative syntax like we did in owl
-        this.header = new Header(this);
-        await this.header.mount(this.el);
-        this.content = new Content(this);
-        await this.content.mount(this.el);
-        this.footer = new Footer(this);
-        await this.footer.mount(this.el);
+        const screenRegistry = registry.category("screens");
+        const Shop = screenRegistry.get('shop');
+        this.currentScreen = new Shop(this);
+        await this.currentScreen.mount(this.el);
     }
 
     //--------------------------------------------------------------------------
     // Handlers
     //--------------------------------------------------------------------------
 
-    onChangeScreen(ev) {
-        debugger;
-        // TODO: Manage screens, instead of destorying current app, we will destroy screen and instantiate new screen
-        this.destroy();
+    async onChangeScreen(ev) {
+        // TODO: MSH: When screen is changed, always add some state to url so that refreshing a browser
+        // should load proper screen from url state
+        this.currentScreen.destroy();
+        const screenName = ev.detail.screen_name;
+        const params = ev.detail.params;
+        const screenRegistry = registry.category("screens");
+        const CurrentScreen = screenRegistry.get(screenName);
+        this.currentScreen = new CurrentScreen(this, params);
+        await this.currentScreen.mount(this.el);
     }
 }
 App.template = "App";

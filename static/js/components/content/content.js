@@ -18,8 +18,8 @@ export class Content extends BaseComponent {
      * @param {MouseEvent} ev 
      */
     onClickProduct(ev) {
-        const productId = ev.target.dataset.id;
-        this.trigger('change-screen', { screen_name: 'product_details', product_id: productId });
+        const productId = ev.currentTarget.dataset.id;
+        this.trigger('change-screen', { screen_name: 'product_details', params: { product_id: productId }});
     }
 }
 Content.template = "Content";

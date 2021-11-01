@@ -10,6 +10,7 @@ import os
 from lxml import etree
 from collections import OrderedDict
 
+import werkzeug
 from werkzeug.exceptions import HTTPException
 from werkzeug.exceptions import NotFound
 try:
@@ -34,6 +35,7 @@ class Application:
             [
                 Rule("/", endpoint="index"),
                 Rule("/get_products", endpoint="get_products"),
+                Rule("/get_product_details", endpoint="get_product_details"),
                 Rule("/add_to_cart", endpoint="add_to_cart"),
                 Rule("/update_cart", endpoint="update_cart"),
                 Rule("/checkout", endpoint="checkout"),
@@ -69,6 +71,7 @@ class Application:
             "static/js/components/header/header.xml",
             "static/js/components/content/content.xml",
             "static/js/components/footer/footer.xml",
+            "static/js/components/product_detail/product_detail.xml",
         ]
         concatedXml = self._concat_xml(files)
         concatedXml = concatedXml.decode("utf-8")
@@ -163,6 +166,33 @@ class Application:
         }
         mime = 'application/json'
         result = {'result': datas}
+        body = json.dumps(result)
+        return Response(
+            body, status=200,
+            headers=[('Content-Type', mime), ('Content-Length', len(body))]
+        )
+
+    def get_product_details(self, request, **kwargs):
+        data = request.get_data().decode(request.charset)
+        try:
+            data = json.loads(data)
+        except ValueError:
+            msg = 'Invalid JSON data: %r' % (data,)
+            raise werkzeug.exceptions.BadRequest(msg)
+
+        params = data.get('params')
+        product = ""
+        with open("data/data.json", "r") as f:
+            datas = json.load(f)
+            if params.get("product_id"):
+                product = next(item for item in datas.get("products") if item["id"] == int(params["product_id"]))
+        
+        response = {
+            'jsonrpc': '2.0',
+            # 'id': request.get('id')
+        }
+        mime = 'application/json'
+        result = {'result': product}
         body = json.dumps(result)
         return Response(
             body, status=200,
