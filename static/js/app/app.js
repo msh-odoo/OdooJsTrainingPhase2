@@ -3,9 +3,13 @@ import { Content } from "../components/content/content.js";
 import { Header } from "../components/header/header.js";
 import { Footer } from "../components/footer/footer.js";
 import { rpc } from "../core/rpc.js";
-import { json_node_to_xml } from "../core/utils.js";
 
-// TODO: MSH: Add unit tests, maybe use Qunit lib for testing
+// TODO: MSH: Add unit tests, maybe use Qunit/jest/mocha test runner lib for testing
+
+// TOD: MSH: Instead of writing Header, Content and Footer, manage everything with screen, there will be
+// registry of screens and we will call screen, initialize it and mount it in body
+// on any screen we will call custom event change-screen and we will pass screen name in event detail
+// this custom event change-screen is listened by window object here in App and handler will be here itself.
 
 export class App extends BaseComponent {
     async mount(target) {
@@ -13,21 +17,32 @@ export class App extends BaseComponent {
         // TODO: MSH: I don't like this, someday we will make it declarative so it is defined in xml but we need to
         // develop our own templating engine in that case to handle declarative syntax like we did in owl
         this.header = new Header(this);
-        this.header.mount(this.el);
+        await this.header.mount(this.el);
         this.content = new Content(this);
-        this.content.mount(this.el);
+        await this.content.mount(this.el);
         this.footer = new Footer(this);
-        this.footer.mount(this.el);
+        await this.footer.mount(this.el);
+    }
+
+    //--------------------------------------------------------------------------
+    // Handlers
+    //--------------------------------------------------------------------------
+
+    onChangeScreen(ev) {
+        debugger;
+        // TODO: Manage screens, instead of destorying current app, we will destroy screen and instantiate new screen
+        this.destroy();
     }
 }
 App.template = "App";
+App.events = {
+    'change-screen': 'onChangeScreen',
+};
 
 (function () {
     const setup = async () => {
         let xml = await rpc("/load-qweb", {});
         const qweb = new QWeb2.Engine();
-        // qweb.add_template(xml);
-        // xml = json_node_to_xml(xml);
         qweb.add_template(xml);
 
         // create instance of App and get element of App and push it into o_main element

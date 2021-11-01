@@ -33,7 +33,7 @@ class Application:
         self.url_map = Map(
             [
                 Rule("/", endpoint="index"),
-                Rule("/products", endpoint="products"),
+                Rule("/get_products", endpoint="get_products"),
                 Rule("/add_to_cart", endpoint="add_to_cart"),
                 Rule("/update_cart", endpoint="update_cart"),
                 Rule("/checkout", endpoint="checkout"),
@@ -152,19 +152,33 @@ class Application:
 
         return etree.tostring(root, encoding='utf-8') if root is not None else b''
 
-    def products(self):
+    def get_products(self, request, **kwargs):
+        datas = ""
+        with open("data/data.json", "r") as f:
+            datas = f.read()
+
+        response = {
+            'jsonrpc': '2.0',
+            # 'id': request.get('id')
+        }
+        mime = 'application/json'
+        result = {'result': datas}
+        body = json.dumps(result)
+        return Response(
+            body, status=200,
+            headers=[('Content-Type', mime), ('Content-Length', len(body))]
+        )
+
+    def add_to_cart(self, request):
         pass
 
-    def add_to_cart(self):
+    def update_cart(self, request):
         pass
 
-    def update_cart(self):
+    def checkout(self, request):
         pass
 
-    def checkout(self):
-        pass
-
-    def confirm_order(self):
+    def confirm_order(self, request):
         pass
 
 def create_app():
