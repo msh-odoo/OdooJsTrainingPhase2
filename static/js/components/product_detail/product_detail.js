@@ -11,4 +11,3 @@ export class ProductDetails extends BaseComponent {
     }
 }
 ProductDetails.template = "ProductDetails";
-

@@ -1,5 +1,5 @@
 import { BaseComponent } from "../components/base_component.js";
-import { Content } from "../components/content/content.js";
+import { ProductList } from "../components/product_list/product_list.js";
 import { Header } from "../components/header/header.js";
 import { Footer } from "../components/footer/footer.js";
 import { registry } from "../core/registry.js";
@@ -11,7 +11,7 @@ export class Shop extends BaseComponent {
         // develop our own templating engine in that case to handle declarative syntax like we did in owl
         this.header = new Header(this);
         await this.header.mount(this.el);
-        this.content = new Content(this);
+        this.content = new ProductList(this);
         await this.content.mount(this.el);
         this.footer = new Footer(this);
         await this.footer.mount(this.el);
