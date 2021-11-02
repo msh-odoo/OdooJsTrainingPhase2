@@ -20,7 +20,7 @@ export class App extends BaseComponent {
     // Handlers
     //--------------------------------------------------------------------------
 
-    async onChangeScreen(ev) {
+    async _onChangeScreen(ev) {
         // TODO: MSH: When screen is changed, always add some state to url so that refreshing a browser
         // should load proper screen from url state
         this.currentScreen.destroy();
@@ -31,10 +31,15 @@ export class App extends BaseComponent {
         this.currentScreen = new CurrentScreen(this, params);
         await this.currentScreen.mount(this.el);
     }
+
+    _onUpdateScreen(ev) {
+        debugger;
+    }
 }
 App.template = "App";
 App.events = {
-    'change-screen': 'onChangeScreen',
+    'change-screen': '_onChangeScreen',
+    'update-screen': '_onUpdateScreen'
 };
 
 (function () {

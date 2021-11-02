@@ -36,6 +36,7 @@ class Application:
                 Rule("/", endpoint="index"),
                 Rule("/get_products", endpoint="get_products"),
                 Rule("/get_product_details", endpoint="get_product_details"),
+                Rule("/search_products", endpoint="search_products"),
                 Rule("/add_to_cart", endpoint="add_to_cart"),
                 Rule("/update_cart", endpoint="update_cart"),
                 Rule("/checkout", endpoint="checkout"),
@@ -69,6 +70,7 @@ class Application:
         files = [
             "static/js/app/app.xml",
             "static/js/components/header/header.xml",
+            "static/js/components/header/cart.xml",
             "static/js/components/product_list/product_list.xml",
             "static/js/components/footer/footer.xml",
             "static/js/components/product/product.xml",
@@ -195,6 +197,33 @@ class Application:
         }
         mime = 'application/json'
         result = {'result': product}
+        body = json.dumps(result)
+        return Response(
+            body, status=200,
+            headers=[('Content-Type', mime), ('Content-Length', len(body))]
+        )
+
+    def search_products(self, request):
+        data = request.get_data().decode(request.charset)
+        try:
+            data = json.loads(data)
+        except ValueError:
+            msg = 'Invalid JSON data: %r' % (data,)
+            raise werkzeug.exceptions.BadRequest(msg)
+        
+        params = data.get('params')
+        products = []
+        if params.get('val'):
+            with open("data/data.json", "r") as f:
+                datas = json.load(f)
+                products = [item for i, item in enumerate(datas.get("products")) if params['val'].lower() in item["produt_name"].lower()]
+
+        response = {
+            'jsonrpc': '2.0',
+            # 'id': request.get('id')
+        }
+        mime = 'application/json'
+        result = {'result': products}
         body = json.dumps(result)
         return Response(
             body, status=200,

@@ -30,10 +30,12 @@
                             <a class="nav-link disabled">Disabled</a>
                         </li>
                     </ul>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
+                    <div class="o_search float-right">
+                        <form class="d-flex">
+                            <input class="o_search_input form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+                            <button class="o_search_btn btn btn-outline-success" type="submit">Search</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </nav>
