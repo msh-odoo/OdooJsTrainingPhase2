@@ -1,4 +1,3 @@
-// TODO: MSH:: this should go inside rpc file, also make it service so it can be called from whole application
 function jsonrpc(rpcId, url, params, settings = {}) {
     // const bus = env.bus;
     const XHR = window.XMLHttpRequest;

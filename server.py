@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import io
-import copy
+# import copy
 import hashlib
 from http.client import responses
 import json
@@ -12,15 +12,15 @@ from collections import OrderedDict
 
 import werkzeug
 from werkzeug.exceptions import HTTPException
-from werkzeug.exceptions import NotFound
+# from werkzeug.exceptions import NotFound
 try:
     from werkzeug.middleware.shared_data import SharedDataMiddleware
 except ImportError:
     from werkzeug.wsgi import SharedDataMiddleware
 from werkzeug.routing import Map
 from werkzeug.routing import Rule
-from werkzeug.urls import url_parse
-from werkzeug.utils import redirect
+# from werkzeug.urls import url_parse
+# from werkzeug.utils import redirect
 from werkzeug.wrappers import Request
 from werkzeug.wrappers import Response
 
@@ -42,6 +42,7 @@ class Application:
                 Rule("/checkout", endpoint="checkout"),
                 Rule("/confirm_order", endpoint="confirm_order"),
                 Rule("/load-qweb", endpoint="loadQweb"),
+                Rule("/tests", endpoint="run_tests"),
             ]
         )
 
@@ -229,6 +230,10 @@ class Application:
             body, status=200,
             headers=[('Content-Type', mime), ('Content-Length', len(body))]
         )
+
+    def run_tests(self, request):
+        html = open("templates/tests.html", 'r').read()
+        return Response(html, mimetype='text/html')
 
     def add_to_cart(self, request):
         pass
