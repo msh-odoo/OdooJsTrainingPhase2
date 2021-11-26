@@ -1,25 +1,18 @@
 
 import { ProductList } from "../../js/components/product_list/product_list.js";
-import { rpc } from "../../js/core/rpc.js";
 
-// function add(a, b) {
-//     return a + b;
-// }
+// TODO: Intercept rpc method and check if route is handled in given mockRPC then call it and return it
+// we will pass mockRPC function and will handle route and return response in all test case
+// move rpc method in env, we will pass mockRPC in test env, our test environemtn's rpc method will first check
+// whether route is handled in mockRPC then call it else we will raise error that route is not handled
 
 let datas;
 let target;
 let env;
 QUnit.module('ProductList', (hooks) => {
     hooks.before(async () => {
-        // TODO: MSH: Prepare env which is called in setup which is called as first file in test and it will will have async function
-        // which load all templates and then QUnit.start is called
-        // set Qunit.config.autostart to false in setup.js file
-
         target = document.querySelector("#qunit-fixture");
-        let xml = await rpc("/load-qweb", {});
-        const qweb = new QWeb2.Engine();
-        qweb.add_template(xml);
-        env = { qweb: qweb };
+        env = { qweb: window.qweb };
     });
     hooks.beforeEach(async () => {
         datas = {
@@ -27,14 +20,18 @@ QUnit.module('ProductList', (hooks) => {
         };
     });
 
+    // TODO: MSH: Create function like createProductList which will set env, create instance of productList
+    // and mount to target, all test will call that method so we don't have to write same code everywhere
     QUnit.test('Simple UI test for ProductList component', async function (assert) {
+        assert.expect(1);
+
         ProductList.env = env;
         const productList = new ProductList(null);
         await productList.mount(target);
         debugger;
+        assert.ok(productList.el.classList.contains('o_content'), "should have o_content class");
+
+        productList.destroy();
     });
 
-    // QUnit.test('two numbers', function (assert) {
-    //     assert.equal(add(1, 2), 3);
-    // });
 });

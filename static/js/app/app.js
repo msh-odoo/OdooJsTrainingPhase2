@@ -42,6 +42,9 @@ App.events = {
     'update-screen': '_onUpdateScreen'
 };
 
+// TODO: MSH: Move this code to main.js file so App class remain in separate file so test can directly import
+// App class, so qweb is not loaded again.
+
 (function () {
     const setup = async () => {
         let xml = await rpc("/load-qweb", {});
